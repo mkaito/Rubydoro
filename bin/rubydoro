@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require 'trollop'
+require 'rubydoro/cli'
+
+STDOUT.sync = true
+
+opts = Trollop::options do
+  version "rubydoro 0.0a"
+  banner <<-EOS
+Pomodoro timer for the console, written in Ruby.
+
+Usage:
+        rubydoro [options]
+
+[options]:
+
+  EOS
+  opt :pomodoro, "Duration of a pomodoro.", :default => "25m"
+  opt :break, "Duration of a break.", :default => "5m"
+  opt :interval, "Time between notifications of time left for pomodoros.", :default => "10m"
+  opt :skip, "Do not time the break period."
+  opt :loop, "Start a new pomodoro automatically."
+  opt :debug, "Verbosity control"
+end
+
+if opts[:debug]
+  puts "Rubydoro running:"
+  puts "  Pomodoro length: #{opts[:pomodoro]}."
+  puts "  Break length: #{opts[:break]}."
+  puts "  Loop: #{opts[:loop]}."
+  puts "  Skip break: #{opts[:skip]}"
+  puts "  Task: #{opts[:task]}"
+end
+
+Rubydoro::CLI.new(opts).run
+# vim:ft=ruby

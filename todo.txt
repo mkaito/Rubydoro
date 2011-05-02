@@ -1,0 +1,5 @@
+Features
+  - Signals for interruptions, pausing, etc.
+  - Markup for notify colours.
+  - rc file for permanent config
+    Prolly keep a per-user config at ~/.rubydororc or something
