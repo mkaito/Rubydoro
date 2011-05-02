@@ -12,8 +12,6 @@ Gem::Specification.new do |s|
   s.summary     = %q{Pomodoro timer for the console}
   s.description = %q{Rubydoro is a timer application for the console, written in Ruby}
 
-  s.add_dependency('trollop', '>= 1.16.2')
-  # s.add_dependency('trollop', '>= 1.16.2')
   s.add_development_dependency('rspec')
 
   s.rubyforge_project = "rubydoro"
