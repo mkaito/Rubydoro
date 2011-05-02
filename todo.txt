@@ -1,7 +1,3 @@
 Features
   - Signals for interruptions, pausing, etc.
   - Mark-up for notify colours.
-  - rc file for permanent config
-    - Probably keep a per-user config at ~/.rubydoro or something.
-    - Likely to use yaml as syntax.
-    - Possibly allow multiple profiles to be defined in rc file, to be used like `rubydoro -p <profile>` or something. Possibly superfluous feature.
