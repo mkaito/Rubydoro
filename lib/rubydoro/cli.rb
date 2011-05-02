@@ -1,20 +1,28 @@
+# encoding: UTF-8
 require 'rubydoro/timer'
+require 'yaml'
+
+STDOUT.sync = true
 
 module Rubydoro
   class CLI
     def initialize(opts)
+
       @opts = opts
+
       @timer = Rubydoro::Timer.new
-      @timer.first { |d| puts "[#{colorize Time.now.strftime('%H:%M'), :blue}] Pomodoro started! You have #{ display_time(d) }."}
+      @timer.first { |d| puts "[#{colorize Time.now.strftime('%H:%M'), :blue}] #{@what.capitalize} is running! You have #{ display_time(d) }."}
       @timer.last { puts "\r[#{colorize Time.now.strftime('%H:%M'), :blue}] Time over!                         "}
       @timer.step { |t| print "\rTime left: #{ colorize display_time(t), (t > 299 ? :green : :red) }"}
     end
 
     def run
       # Always run the initial pomodoro
-      @timer.run parse_time(@opts[:pomodoro])
+      @what = "pomorodo"
+      @timer.run parse_time(@opts[:duration])
 
       # Run a break timer unless we're asked to skip it
+      @what = "break"
       @timer.run parse_time(@opts[:break]) unless @opts[:skip]
 
       # Loop recursively if asked to
@@ -32,7 +40,7 @@ module Rubydoro
              end
 
       time.map! { |v|v.to_s.rjust(2, '0') }
-      time.join(":")
+      time.length == 1 ? "#{time[0]} seconds" : time.join(":")
     end
 
     def parse_time(t)
@@ -45,7 +53,7 @@ module Rubydoro
     end
 
     def colorize(text, fg=:default, bg=:default)
-      text unless @opts[:colorize]
+      return text unless @opts[:colorize]
       fge = case fg
             when :black then 30
             when :red then 31

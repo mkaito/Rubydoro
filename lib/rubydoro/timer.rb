@@ -1,9 +1,5 @@
 module Rubydoro
   class Timer
-    # def initialize(opts)
-    #   @opts = opts
-    # end
-
     def first(&block)
       @first = block
     end

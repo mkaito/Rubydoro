@@ -1,36 +1,67 @@
 #!/usr/bin/env ruby
-require 'trollop'
+# encoding: UTF-8
+require 'optparse'
 require 'rubydoro/cli'
 
-STDOUT.sync = true
+# Default options
+opts = {
+  verbose: false,
+  colorize: false,
+  loop: false,
+  skip: false,
+  notify: false,
+  duration: "25m",
+  break: "5m"
+}
 
-opts = Trollop::options do
-  version "rubydoro 0.0a"
-  banner <<-EOS
-Pomodoro timer for the console, written in Ruby.
-
-Usage:
-        rubydoro [options]
-
-[options]:
-
-  EOS
-  opt :pomodoro, "Duration of a pomodoro.", :default => "25m"
-  opt :break, "Duration of a break.", :default => "5m"
-  opt :interval, "Time between notifications of time left for pomodoros.", :default => "10m"
-  opt :skip, "Do not time the break period."
-  opt :loop, "Start a new pomodoro automatically."
-  opt :debug, "Verbosity control"
+if File.exists?(File.expand_path("~/.rubydoro"))
+  fileopts = YAML.load(File.read(File.expand_path("~/.rubydoro")))
+  fileopts = fileopts.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+  opts.update fileopts
 end
 
-if opts[:debug]
-  puts "Rubydoro running:"
-  puts "  Pomodoro length: #{opts[:pomodoro]}."
-  puts "  Break length: #{opts[:break]}."
-  puts "  Loop: #{opts[:loop]}."
-  puts "  Skip break: #{opts[:skip]}"
-  puts "  Task: #{opts[:task]}"
+optparse = OptionParser.new do |o|
+   o.banner = <<-EOS
+   Pomodoro timer for the unix console, written in Ruby
+
+   usage:
+           rubydory [options]
+
+   where [options] are:
+
+   EOS
+ 
+   o.on( '-v', '--verbose', 'Output more information' ) do
+     opts[:verbose] = true
+   end
+
+   o.on( '-l', '--loop', 'Start a new pomodoro automatically') do
+     opts[:loop] = true
+   end
+
+   o.on( '-s', '--skip', 'Skip break timer') do
+     opts[:skip] = true
+   end
+
+   o.on( '-q', '--quiet', 'Disable system-level notifications (libnotify)') do
+     opts[:notify] = false
+   end
+
+   o.on( '-d', '--duration DURATION', 'Pomodoro duration: 30s, 25m, 2h, etc.') do |duration|
+     opts[:duration] = duration
+   end
+
+   o.on( '-b', '--break DURATION', 'Break duration; see --duration.') do |duration|
+     opts[:break] = duration
+   end
+
+   o.on( '-h', '--help', 'Display this screen') do
+     puts o
+     exit
+   end
 end
+
+optparse.parse!
 
 Rubydoro::CLI.new(opts).run
 # vim:ft=ruby
